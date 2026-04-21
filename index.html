@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central Valley Schools: A Detailed Analysis</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: #f8f6f1; color: #1a1a1a; line-height: 1.6; }
+  .header { background: #1a2e1a; color: #e8f4e8; padding: 48px 40px 40px; }
+  .header h1 { font-size: 32px; font-weight: 400; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .header .subtitle { font-size: 14px; color: #8fbc8f; letter-spacing: 0.06em; text-transform: uppercase; }
+  .container { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+  .section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #5a7a5a; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #d4e4d4; }
+  .section { margin-bottom: 36px; }
+  p { margin-bottom: 14px; font-size: 15px; line-height: 1.75; color: #2a2a2a; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 8px; }
+  .metric-card { background: white; border: 1px solid #d8e8d8; border-radius: 8px; padding: 14px 16px; }
+  .metric-label { font-size: 11px; color: #6a7a6a; margin-bottom: 4px; line-height: 1.3; }
+  .metric-val { font-size: 24px; font-weight: 700; color: #1a3a1a; line-height: 1; }
+  .metric-sub { font-size: 11px; color: #8a9a8a; margin-top: 4px; }
+  .bar-section { margin-bottom: 24px; }
+  .bar-subsection-title { font-size: 12px; font-weight: 600; color: #3a5a3a; margin-bottom: 10px; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+  .bar-label { font-size: 12px; color: #3a3a3a; width: 230px; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 11px; background: #eef4ee; border-radius: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 6px; }
+  .bar-pct { font-size: 11px; color: #5a5a5a; width: 38px; text-align: right; flex-shrink: 0; font-weight: 600; }
+  .avg-line { background: #c8d8c8; border-left: 3px solid #4a6a4a; }
+  .avg-label { font-size: 11px; font-weight: 700; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .panel { background: white; border: 1px solid #d8e8d8; border-radius: 8px; padding: 16px 18px; }
+  .panel-title { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+  .panel-title.green { color: #1a6a1a; }
+  .panel-title.red { color: #8a1a1a; }
+  .district-row { padding: 8px 0; border-bottom: 1px solid #eef4ee; display: flex; justify-content: space-between; align-items: flex-start; }
+  .district-row:last-child { border-bottom: none; }
+  .d-name { font-size: 13px; font-weight: 600; color: #1a2a1a; }
+  .d-region { font-size: 11px; color: #6a7a6a; }
+  .d-badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
+  .badge-best { background: #e0f0e0; color: #1a5a1a; }
+  .badge-high { background: #e8f4e0; color: #3a6a1a; }
+  .badge-low { background: #fce8e8; color: #8a1a1a; }
+  .badge-mid { background: #fef4e0; color: #7a5a1a; }
+  .scores-inline { font-size: 12px; color: #3a3a3a; text-align: right; }
+  .scores-inline b { font-weight: 700; }
+  .context-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 8px; }
+  .context-card { background: #f0f8f0; border: 1px solid #c8e0c8; border-radius: 8px; padding: 12px 14px; }
+  .context-label { font-size: 11px; color: #5a7a5a; margin-bottom: 3px; }
+  .context-val { font-size: 18px; font-weight: 700; color: #1a3a1a; }
+  .context-note { font-size: 11px; color: #7a9a7a; margin-top: 3px; }
+  .insight-box { background: #1a2e1a; color: #d0e8d0; border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; }
+  .insight-box h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #8fcc8f; letter-spacing: 0.05em; }
+  .insight-box ul { list-style: none; padding: 0; }
+  .insight-box li { font-size: 13px; padding: 4px 0; padding-left: 16px; position: relative; line-height: 1.5; }
+  .insight-box li::before { content: "→"; position: absolute; left: 0; color: #5a9a5a; }
+  .source-note { font-size: 11px; color: #8a9a8a; margin-top: 20px; padding-top: 12px; border-top: 1px solid #d4e4d4; line-height: 1.6; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #5a6a5a; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .divider { height: 1px; background: #d4e4d4; margin: 28px 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="subtitle">Education Quality Report · 2024–25</div>
+  <h1>Central Valley Schools:<br>A Detailed Cross-Regional Analysis</h1>
+</div>
+
+<div class="container">
+
+  <!-- Overview -->
+  <div class="section">
+    <div class="section-label">Overview</div>
+    <p>California's Central Valley — encompassing counties from Sacramento south through Kern — serves over 1.2 million K–12 students across dozens of school districts. As a region, its schools face some of the most challenging socioeconomic conditions in the state, and this is directly reflected in academic outcomes. Most Central Valley districts score meaningfully below the state average on California's standardized assessments (CAASPP), though there are important exceptions and meaningful pockets of excellence.</p>
+    <p>The gap between the Valley and the state's best-performing regions — the Bay Area and coastal San Diego — is substantial, often spanning 30 to 60 percentage points on proficiency measures. However, the picture is not monolithic: districts like Clovis Unified consistently outperform the state average and rank among the better-performing large districts in California.</p>
+  </div>
+
+  <!-- Statewide benchmarks -->
+  <div class="section">
+    <div class="section-label">2024–25 Statewide CAASPP Benchmarks</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">CA statewide ELA proficiency</div>
+        <div class="metric-val">48.8%</div>
+        <div class="metric-sub">met or exceeded standard (+1.8 pts from 2024)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">CA statewide math proficiency</div>
+        <div class="metric-val">37.3%</div>
+        <div class="metric-sub">met or exceeded standard (+1.8 pts from 2024)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Socioec. disadvantaged (ELA)</div>
+        <div class="metric-val">38.2%</div>
+        <div class="metric-sub">CA avg for high-need students</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Hispanic/Latino students (ELA)</div>
+        <div class="metric-val">38.8%</div>
+        <div class="metric-sub">CA avg; majority in Central Valley</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ELA Proficiency bars -->
+  <div class="section bar-section">
+    <div class="section-label">ELA Proficiency by Region &amp; District — 2024–25</div>
+    <div class="bar-subsection-title">% of students meeting or exceeding CA standard in English Language Arts</div>
+
+    <div class="bar-row">
+      <div class="bar-label">Lynbrook HS / Fremont USD (Bay Area)</div>
+      <div class="bar-track"><div class="bar-fill" style="width:93.7%;background:#1a5a8a;"></div></div>
+      <div class="bar-pct">93.7%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Palo Alto Unified (Bay Area)</div>
+      <div class="bar-track"><div class="bar-fill" style="width:88%;background:#1a5a8a;"></div></div>
+      <div class="bar-pct">~88%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Los Gatos HS (Bay Area)</div>
+      <div class="bar-track"><div class="bar-fill" style="width:83.6%;background:#1a5a8a;"></div></div>
+      <div class="bar-pct">83.6%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">San Diego Unified</div>
+      <div class="bar-track"><div class="bar-fill" style="width:56%;background:#4a7aaa;"></div></div>
+      <div class="bar-pct">~56%</div>
+    </div>
+    <div class="bar-row avg-line" style="background:none; border-left:none;">
+      <div class="bar-label avg-label" style="color:#3a5a3a;">▶ California Statewide Average</div>
+      <div class="bar-track" style="background:#d4e4d4;border:1.5px dashed #4a7a4a;"><div class="bar-fill" style="width:48.8%;background:#4a7a4a;opacity:0.6;"></div></div>
+      <div class="bar-pct" style="color:#3a5a3a;font-weight:700;">48.8%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label"><b style="color:#1a5a1a;">Clovis Unified</b> (Fresno Co.) ★</div>
+      <div class="bar-track"><div class="bar-fill" style="width:65%;background:#2a8a4a;"></div></div>
+      <div class="bar-pct">~65%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Sacramento City Unified</div>
+      <div class="bar-track"><div class="bar-fill" style="width:41%;background:#4aaa6a;"></div></div>
+      <div class="bar-pct">~41%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Fresno Unified</div>
+      <div class="bar-track"><div class="bar-fill" style="width:37.1%;background:#2a7a4a;"></div></div>
+      <div class="bar-pct">37.1%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Stockton / San Joaquin avg</div>
+      <div class="bar-track"><div class="bar-fill" style="width:34%;background:#1a6a3a;"></div></div>
+      <div class="bar-pct">~34%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Kern / Bakersfield area avg</div>
+      <div class="bar-track"><div class="bar-fill" style="width:31%;background:#1a5a2a;"></div></div>
+      <div class="bar-pct">~31%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Merced / Kings / Tulare avg</div>
+      <div class="bar-track"><div class="bar-fill" style="width:27%;background:#0a4a1a;"></div></div>
+      <div class="bar-pct">~27%</div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#1a5a8a;"></div>Bay Area</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4a7aaa;"></div>So. CA coast</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4a7a4a;"></div>CA avg</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2a8a4a;"></div>Central Valley — high</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#0a4a1a;"></div>Central Valley — low</div>
+    </div>
+  </div>
+
+  <!-- Math bars -->
+  <div class="section bar-section">
+    <div class="section-label">Math Proficiency by Region &amp; District — 2024–25</div>
+    <div class="bar-subsection-title">% of students meeting or exceeding CA standard in Mathematics</div>
+
+    <div class="bar-row">
+      <div class="bar-label">Lynbrook HS (Bay Area)</div>
+      <div class="bar-track"><div class="bar-fill" style="width:92.2%;background:#1a5a8a;"></div></div>
+      <div class="bar-pct">92.2%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Palo Alto Unified (Bay Area)</div>
+      <div class="bar-track"><div class="bar-fill" style="width:82%;background:#1a5a8a;"></div></div>
+      <div class="bar-pct">~82%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Los Gatos HS (Bay Area)</div>
+      <div class="bar-track"><div class="bar-fill" style="width:63.3%;background:#1a5a8a;"></div></div>
+      <div class="bar-pct">63.3%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">San Diego Unified</div>
+      <div class="bar-track"><div class="bar-fill" style="width:44%;background:#4a7aaa;"></div></div>
+      <div class="bar-pct">~44%</div>
+    </div>
+    <div class="bar-row avg-line" style="background:none;border-left:none;">
+      <div class="bar-label avg-label" style="color:#3a5a3a;">▶ California Statewide Average</div>
+      <div class="bar-track" style="background:#d4e4d4;border:1.5px dashed #4a7a4a;"><div class="bar-fill" style="width:37.3%;background:#4a7a4a;opacity:0.6;"></div></div>
+      <div class="bar-pct" style="color:#3a5a3a;font-weight:700;">37.3%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label"><b style="color:#1a5a1a;">Clovis Unified</b> (Fresno Co.) ★</div>
+      <div class="bar-track"><div class="bar-fill" style="width:49%;background:#2a8a4a;"></div></div>
+      <div class="bar-pct">~49%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Sacramento City Unified</div>
+      <div class="bar-track"><div class="bar-fill" style="width:30%;background:#4aaa6a;"></div></div>
+      <div class="bar-pct">~30%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Fresno Unified</div>
+      <div class="bar-track"><div class="bar-fill" style="width:27.2%;background:#2a7a4a;"></div></div>
+      <div class="bar-pct">27.2%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Kern / Bakersfield area avg</div>
+      <div class="bar-track"><div class="bar-fill" style="width:21%;background:#1a5a2a;"></div></div>
+      <div class="bar-pct">~21%</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Merced / Kings / Tulare avg</div>
+      <div class="bar-track"><div class="bar-fill" style="width:17%;background:#0a4a1a;"></div></div>
+      <div class="bar-pct">~17%</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Highest & Lowest Central Valley -->
+  <div class="section">
+    <div class="section-label">Highest &amp; Lowest Performing — Central Valley</div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-title green">★ Strongest Districts</div>
+        <div class="district-row">
+          <div>
+            <div class="d-name">Clovis Unified SD</div>
+            <div class="d-region">Fresno Co. · 43K students</div>
+          </div>
+          <div>
+            <div class="scores-inline"><b>65%</b> ELA · <b>49%</b> Math</div>
+            <span class="d-badge badge-best">Niche A-rated · #63 CA</span>
+          </div>
+        </div>
+        <div class="district-row">
+          <div>
+            <div class="d-name">Clovis North High School</div>
+            <div class="d-region">Fresno Co. (individual school)</div>
+          </div>
+          <div><span class="d-badge badge-best">#34 of 2,323 CA HS</span></div>
+        </div>
+        <div class="district-row">
+          <div>
+            <div class="d-name">Kingsburg USD</div>
+            <div class="d-region">Fresno County</div>
+          </div>
+          <div><span class="d-badge badge-high">Niche B+</span></div>
+        </div>
+        <div class="district-row">
+          <div>
+            <div class="d-name">Sanger Unified SD</div>
+            <div class="d-region">Fresno Co. · ~12K students</div>
+          </div>
+          <div><span class="d-badge badge-high">Niche B+</span></div>
+        </div>
+        <div class="district-row">
+          <div>
+            <div class="d-name">Golden Valley USD</div>
+            <div class="d-region">Fresno County</div>
+          </div>
+          <div><span class="d-badge badge-high">Niche B+</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title red">⚠ Lowest Performing</div>
+        <div class="district-row">
+          <div>
+            <div class="d-name">Fresno Unified SD</div>
+            <div class="d-region">Fresno Co. · ~70K students (3rd largest CA)</div>
+          </div>
+          <div>
+            <div class="scores-inline"><b>37%</b> ELA · <b>27%</b> Math</div>
+            <span class="d-badge badge-low">Below state avg</span>
+          </div>
+        </div>
+        <div class="district-row">
+          <div>
+            <div class="d-name">Bakersfield / Kern districts</div>
+            <div class="d-region">Kern County</div>
+          </div>
+          <div>
+            <div class="scores-inline">~30% ELA · ~20% Math</div>
+            <span class="d-badge badge-low">Below state avg</span>
+          </div>
+        </div>
+        <div class="district-row">
+          <div>
+            <div class="d-name">Merced City SD / Kings Co.</div>
+            <div class="d-region">Merced / Kings counties</div>
+          </div>
+          <div>
+            <div class="scores-inline">~26% ELA · ~17% Math</div>
+            <span class="d-badge badge-low">Low</span>
+          </div>
+        </div>
+        <div class="district-row">
+          <div>
+            <div class="d-name">Rural Tulare County districts</div>
+            <div class="d-region">Tulare County</div>
+          </div>
+          <div>
+            <span class="d-badge badge-low">Lowest in region</span>
+          </div>
+        </div>
+        <div class="district-row">
+          <div>
+            <div class="d-name">Stockton / Modesto area</div>
+            <div class="d-region">San Joaquin / Stanislaus Co.</div>
+          </div>
+          <div>
+            <span class="d-badge badge-mid">Mixed / Below avg</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contextual Factors -->
+  <div class="section">
+    <div class="section-label">Why the Gap Exists — Key Demographic &amp; Structural Factors</div>
+    <div class="context-grid">
+      <div class="context-card">
+        <div class="context-label">Socioec. disadvantaged — CA avg</div>
+        <div class="context-val">~64%</div>
+        <div class="context-note">Central Valley counties often 80–90%</div>
+      </div>
+      <div class="context-card">
+        <div class="context-label">English Learners — CA avg</div>
+        <div class="context-val">~17%</div>
+        <div class="context-note">Fresno, Kern, Tulare closer to 25–30%</div>
+      </div>
+      <div class="context-card">
+        <div class="context-label">Migrant Ed. students (statewide)</div>
+        <div class="context-val">>25%</div>
+        <div class="context-note">of CA's 46K+ are in Fresno, Kern &amp; Tulare</div>
+      </div>
+      <div class="context-card">
+        <div class="context-label">Per-pupil spending — Fresno Unified</div>
+        <div class="context-val">$18,829</div>
+        <div class="context-note">Below CA median of $19,974/student</div>
+      </div>
+    </div>
+    <p style="margin-top:14px;">The Central Valley's educational challenges are deeply intertwined with economic and demographic conditions that are among the most difficult in the state. Poverty rates, high proportions of English Learners, large numbers of migrant agricultural workers' children, and lower levels of parental education all correlate with lower academic performance. These factors are not excuses — they are the structural context that districts must navigate, often with less funding per pupil than wealthier coastal areas receive.</p>
+  </div>
+
+  <!-- Key Insights -->
+  <div class="section">
+    <div class="section-label">Key Findings &amp; Analysis</div>
+    <div class="insight-box">
+      <h3>What the Data Shows</h3>
+      <ul>
+        <li>Central Valley schools as a region consistently score below the state average in both ELA and math. Proficiency rates in the southern San Joaquin Valley (Kern, Kings, Merced, Tulare) are the lowest in the region, often 10–20 percentage points below even the Central Valley average.</li>
+        <li>The Bay Area and coastal San Diego represent the state's highest-performing zones, with top districts scoring 2–3 times higher than the lowest-performing Central Valley districts on CAASPP.</li>
+        <li>Clovis Unified is the clear standout in the Central Valley — ranking among the top 65 school districts in California and achieving proficiency rates well above the state average, despite serving a mid-sized city. Its individual schools (Clovis North, Buchanan) rank in the top 2–5% statewide.</li>
+        <li>The "two Fresnos" problem: Clovis Unified and Fresno Unified share adjacent geography but have vastly different outcomes. Clovis is largely suburban and wealthier; Fresno Unified serves a much higher concentration of low-income and English Learner students.</li>
+        <li>Sacramento, while technically Central Valley, performs significantly better than the San Joaquin Valley cities to its south, reflecting a more diversified economy and higher average household incomes.</li>
+        <li>Chronic absenteeism is a cross-regional problem but hits the Central Valley particularly hard, exacerbated by poverty, agricultural labor patterns, and pandemic aftereffects.</li>
+        <li>Graduation rates have improved across the Valley — Fresno Unified reached 89%, up from 84% five years ago — showing that outcomes can improve even in challenging environments with sustained investment.</li>
+        <li>Teacher shortages disproportionately affect the Valley, compounded by high cost of housing relative to teacher salaries, lower housing stock in smaller cities, and competition from better-paying suburban districts.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Graduation rates -->
+  <div class="section">
+    <div class="section-label">Graduation Rates Comparison</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Clovis Unified grad rate</div>
+        <div class="metric-val" style="color:#1a5a1a;">~96%</div>
+        <div class="metric-sub">among highest in the Valley</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Fresno Unified grad rate</div>
+        <div class="metric-val" style="color:#4a7a4a;">89%</div>
+        <div class="metric-sub">↑ from 84% five years ago</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">San Diego Unified</div>
+        <div class="metric-val" style="color:#4a7aaa;">~88%</div>
+        <div class="metric-sub">slight recent dip from tighter waivers</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">College/career ready — Fresno</div>
+        <div class="metric-val" style="color:#8a5a1a;">43%</div>
+        <div class="metric-sub">goal: 64% by 2030</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trends -->
+  <div class="section">
+    <div class="section-label">Trends &amp; Outlook</div>
+    <p>Despite the persistent gap, there are genuine reasons for cautious optimism in the Central Valley. CAASPP scores across California have shown steady year-over-year improvement since pandemic lows, and Central Valley districts have generally improved at similar or slightly above-average rates. Fresno Unified, for instance, saw a 2+ percentage point gain in both ELA and math in 2024–25, and its first-grade literacy proficiency target of 80% by 2030 (up from 48% in 2024) indicates serious institutional ambition.</p>
+    <p>The region's high birth rates and growing enrollment — in contrast to declining enrollment in coastal districts — mean the Valley will have an increasingly large share of California's student population going forward. How well these students are educated will matter enormously for the state's economic future, particularly given that the Valley will provide a significant share of California's workforce in the coming decades.</p>
+    <p>Investments in community schools, Universal Transitional Kindergarten, reading coaches, and the state's Local Control Funding Formula (which directs more money to high-need districts) are all targeted partly at reducing the Valley's educational disadvantage. Whether these investments are sufficient to close the gap with the Bay Area and coastal California remains an open question — but the structural challenges are formidable and will require sustained commitment over multiple decades.</p>
+  </div>
+
+  <div class="source-note">
+    Sources: California Dept. of Education CAASPP 2024–25 results (released Oct. 2025); PPIC "California's K–12 Test Scores" (2025); EdSource CAASPP database; Niche.com district ratings (2026); SchoolDigger California rankings; Kidsdata.org; Fresno Unified CAASPP preview (Sept. 2025); PPIC Statewide Survey: Californians and Education (April 2026). Bay Area high-school figures are grade-11 CAASPP data. "~" values are regional estimates derived from county-level CAASPP data and published district previews where district-level data was not directly accessible. Data is current as of April 2026.
+  </div>
+
+</div>
+</body>
+</html>
